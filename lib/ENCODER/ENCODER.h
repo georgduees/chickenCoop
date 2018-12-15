@@ -2,13 +2,13 @@
  * @Author: georg.duees 
  * @Date: 2018-12-15 11:56:25 
  * @Last Modified by: georg.duees
- * @Last Modified time: 2018-12-15 20:31:33
+ * @Last Modified time: 2018-12-15 20:47:08
  * Inspired by Christian Aschoff / caschoff _AT_ mac _DOT_ com Qlockthree
  */
 #ifndef ENCODER_H
 #define ENCODER_H
 #include <stdint.h>
-
+#include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 #if defined(ARDUINO) && ARDUINO >= 100
