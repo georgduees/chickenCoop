@@ -5,8 +5,8 @@
 #include "DS1307.h"
 #include "MyRTC.h"
 #include "LDR.h"
-#include "EC11.h"
-
+#include "ENCODER.h"
+#include "TimerOne.h"
 
 // enable DEBUG OUTPUT RETURNS MORE VERBOSE OUTPUTS
 #define DEBUG
@@ -93,7 +93,12 @@ byte helperSeconds;
  */
 LDR ldr(PIN_LDR,LDR_INVERTED);
 unsigned long lastBrightnessCheck;
-EC11 encoder = EC11(PIN_ENC1_A,PIN_ENC1_B,PIN_ENC1_C);
+Encoder encoder = Encoder(PIN_ENC1_A,PIN_ENC1_B,PIN_ENC1_C,4,true);
+
+//encoder Timer
+void timerIsr() {
+  encoder.service();
+}
 //HELPER FUNCTIONS
 
 //helper functions
@@ -109,7 +114,9 @@ EC11 encoder = EC11(PIN_ENC1_A,PIN_ENC1_B,PIN_ENC1_C);
 void setup() {
     Serial.begin(SERIAL_SPEED);
 //initialization of EC11 encoder
-
+  Timer1.initialize(1000);
+  Timer1.attachInterrupt(timerIsr); 
+  
     // Set Timeout of 50ms for Serial.parseInt()
     Serial.setTimeout(50);
     DEBUG_PRINTLN(F("chickenCoop is initializing..."));
@@ -181,35 +188,52 @@ DEBUG_PRINT(F("LDR Brightness: "));
 
     DEBUG_FLUSH();
 DEBUG_PRINT(F("Encoder Value: "));
-    DEBUG_PRINTLN(encoder.value());
+    DEBUG_PRINTLN(encoder.Value());
     DEBUG_FLUSH();
 }
 void loop(){
-  //check encoder value and do something.
-  int val = encoder.value();
- if(encoder.value()>0){
-   
-   switch (val)
+  Encoder::State curState=encoder.Value();
+   switch (curState)
    {
-     case left:
-     DEBUG_PRINTLN(F("LEFT"));
+     case encoder.LEFT:
+     DEBUG_PRINT(F("Encoder State: "));
+    DEBUG_PRINT(curState);
+    DEBUG_PRINT(F(" / "));
+        DEBUG_PRINTLN(F("LEFT"));
+        break;
+    case encoder.RIGHT: 
+    DEBUG_PRINT(F("Encoder State: "));
+    DEBUG_PRINT(curState);
+    DEBUG_PRINT(F(" / "));
+        DEBUG_PRINTLN(F("RIGHT"));
+        break;
+        case encoder.CLICK:
+         DEBUG_PRINT(F("Encoder State: "));
+    DEBUG_PRINT(curState);
+    DEBUG_PRINT(F(" / "));
+        DEBUG_PRINTLN(F("CLICK"));
+        break;
+       case encoder.DOUBLECLICK:
+        DEBUG_PRINT(F("Encoder State: "));
+    DEBUG_PRINT(curState);
+    DEBUG_PRINT(F(" / "));
+     DEBUG_PRINTLN(F("DOUBLECLICK"));
      break;
-       case right:
-     DEBUG_PRINTLN(F("RIGHT"));
-     break;
-        case click:
-     DEBUG_PRINTLN(F("CLICK"));
-     break;
-       case doubleclick:
-     DEBUG_PRINTLN(F("doubleclick"));
-     break;
-         case hold:
-     DEBUG_PRINTLN(F("hold"));
+         case encoder.HOLD:
+          DEBUG_PRINT(F("Encoder State: "));
+    DEBUG_PRINT(curState);
+    DEBUG_PRINT(F(" / "));
+     DEBUG_PRINTLN(F("HOLD"));
      break;
      default:
        break;
    };
-   delay(DEBOUNCE_TIME);
+   // RESET encoder state to detect changes
+   encoder.ResetState();
+
+
+   /*
+   e
  }
   
   /*

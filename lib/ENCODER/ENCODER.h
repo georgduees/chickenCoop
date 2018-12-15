@@ -2,12 +2,15 @@
  * @Author: georg.duees 
  * @Date: 2018-12-15 11:56:25 
  * @Last Modified by: georg.duees
- * @Last Modified time: 2018-12-15 14:37:29
+ * @Last Modified time: 2018-12-15 20:31:33
  * Inspired by Christian Aschoff / caschoff _AT_ mac _DOT_ com Qlockthree
  */
-#ifndef EC11_H
-#define EC11_H
+#ifndef ENCODER_H
+#define ENCODER_H
+#include <stdint.h>
 
+#include <avr/interrupt.h>
+#include <avr/pgmspace.h>
 #if defined(ARDUINO) && ARDUINO >= 100
   #include "Arduino.h"
 #else
@@ -28,25 +31,32 @@
 #define HOLDTIME 1200 // report held button after 1.2s
 
   
-class EC11 {
+class Encoder {
 public:
-    typedef enum  EC11_STATE_e {
-        unknown=0,
-        left,
-        right,
-        click,
-        doubleclick,
-        hold
-    } EC11_STATE;
+    typedef enum  State {
+        UNKNOWN=0,
+        LEFT,
+        RIGHT,
+        CLICK,
+        DOUBLECLICK,
+        HOLD
+    }State;
 public:
-    EC11(byte pinA,byte pinB,byte buttonPin);
-public:
-    EC11_STATE value(void);
+    Encoder(byte pinA,byte pinB,byte buttonPin,int steps=1,bool inverted=false);
+    State Value(void);
+    void ResetState(void);
+    void service(void);
 private:
     byte _pinA;
     byte _pinB;
     byte _buttonPin;
-    int _debounceTime;
+    int _steps;
+    bool _inverted;
+     volatile int16_t _last;
+       static const int8_t _table[16];
+         volatile int16_t _delta;
+    State _state;
+bool doubleClickEnabled;
 };
 
 #endif
