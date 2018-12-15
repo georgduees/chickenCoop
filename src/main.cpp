@@ -181,16 +181,43 @@ DEBUG_PRINT(F("LDR Brightness: "));
 
     DEBUG_FLUSH();
 DEBUG_PRINT(F("Encoder Value: "));
-    DEBUG_PRINT(encoder.value());
+    DEBUG_PRINTLN(encoder.value());
     DEBUG_FLUSH();
 }
 void loop(){
+  //check encoder value and do something.
+  int val = encoder.value();
+ if(encoder.value()>0){
+   
+   switch (val)
+   {
+     case left:
+     DEBUG_PRINTLN(F("LEFT"));
+     break;
+       case right:
+     DEBUG_PRINTLN(F("RIGHT"));
+     break;
+        case click:
+     DEBUG_PRINTLN(F("CLICK"));
+     break;
+       case doubleclick:
+     DEBUG_PRINTLN(F("doubleclick"));
+     break;
+         case hold:
+     DEBUG_PRINTLN(F("hold"));
+     break;
+     default:
+       break;
+   };
+   delay(DEBOUNCE_TIME);
+ }
+  
+  /*
 DEBUG_PRINT(F("LDR Brightness: "));
     DEBUG_PRINT(ldr.brightness());
     DEBUG_PRINT(F(" / "));
     DEBUG_PRINTLN(MAX_BRIGHTNESS);
     DEBUG_FLUSH();
-    delay(100);
-
+    delay(100);*/
 }
 

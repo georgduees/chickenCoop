@@ -2,7 +2,7 @@
  * @Author: georg.duees 
  * @Date: 2018-12-15 12:58:46 
  * @Last Modified by: georg.duees
- * @Last Modified time: 2018-12-15 13:05:35
+ * @Last Modified time: 2018-12-15 13:13:34
  */
 #include "EC11.h"
 //#define DEBUG
@@ -20,7 +20,7 @@ pinMode(_pinB,INPUT);
 pinMode(_buttonPin,INPUT);
 }
 EC11_STATE EC11::value(){
-    EC11_STATE retVal =unknown;
+    EC11_STATE retVal =left;
 
  return retVal;
 }
