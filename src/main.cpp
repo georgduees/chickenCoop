@@ -5,6 +5,7 @@
 #include "DS1307.h"
 #include "MyRTC.h"
 #include "LDR.h"
+#include "EC11.h"
 
 
 // enable DEBUG OUTPUT RETURNS MORE VERBOSE OUTPUTS
@@ -78,6 +79,8 @@
 #define PIN_LDR A7
 
 
+
+
 //TIME DEFINITION
 /**
  * Die Real-Time-Clock mit der Status-LED fuer das SQW-Signal.
@@ -90,7 +93,7 @@ byte helperSeconds;
  */
 LDR ldr(PIN_LDR,LDR_INVERTED);
 unsigned long lastBrightnessCheck;
-
+EC11 encoder = EC11(PIN_ENC1_A,PIN_ENC1_B,PIN_ENC1_C);
 //HELPER FUNCTIONS
 
 //helper functions
@@ -105,6 +108,7 @@ unsigned long lastBrightnessCheck;
   }
 void setup() {
     Serial.begin(SERIAL_SPEED);
+//initialization of EC11 encoder
 
     // Set Timeout of 50ms for Serial.parseInt()
     Serial.setTimeout(50);
@@ -176,7 +180,9 @@ DEBUG_PRINT(F("LDR Brightness: "));
     DEBUG_PRINTLN(MAX_BRIGHTNESS);
 
     DEBUG_FLUSH();
-
+DEBUG_PRINT(F("Encoder Value: "));
+    DEBUG_PRINT(encoder.value());
+    DEBUG_FLUSH();
 }
 void loop(){
 DEBUG_PRINT(F("LDR Brightness: "));
