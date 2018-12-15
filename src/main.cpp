@@ -7,7 +7,7 @@
 #include "LDR.h"
 #include "ENCODER.h"
 #include "TimerOne.h"
-
+#include "LED.h"
 // enable DEBUG OUTPUT RETURNS MORE VERBOSE OUTPUTS
 #define DEBUG
 
@@ -21,6 +21,8 @@
 #define LED_TYPE APA102
 //#define LED_TYPE_WS2812
 #define LED_NUM 1
+#define LED_BLINKDURATION 500
+#define LED_COLORPROFILE BGR
 // RTC Module I2C Adress
 #define I2C_RTC 0x68
 // LCD Module Adress
@@ -66,8 +68,8 @@
 #define PIN_REED_1 8
 #define PIN_REED_2 9
 // LED STRIP PINOUT
-#define PIN_LED_DATA D10
-#define PIN_LED_CLK D13
+#define PIN_LED_DATA 10
+#define PIN_LED_CLK 13
 // MOTOR PINS A1 und A2 
 #define PIN_MOTOR_A1 D11
 #define PIN_MOTOR_A2 D12
@@ -99,6 +101,9 @@ Encoder encoder = Encoder(PIN_ENC1_A,PIN_ENC1_B,PIN_ENC1_C,4,true);
 void timerIsr() {
   encoder.service();
 }
+// initialize LED
+
+LED led = LED(LED_TYPE,PIN_LED_DATA,PIN_LED_CLK,LED_COLORPROFILE);
 //HELPER FUNCTIONS
 
 //helper functions
@@ -190,11 +195,15 @@ DEBUG_PRINT(F("LDR Brightness: "));
 DEBUG_PRINT(F("Encoder Value: "));
     DEBUG_PRINTLN(encoder.Value());
     DEBUG_FLUSH();
+
+    led.blink(1);
+    led.blink(1,CRGB::Red);
+    led.blink(1,CRGB::Blue);
+    led.show(CRGB::DarkMagenta,64,5000);
 }
 void loop(){
   Encoder::State curState=encoder.Value();
-   switch (curState)
-   {
+   switch (curState){
      case encoder.LEFT:
      DEBUG_PRINT(F("Encoder State: "));
     DEBUG_PRINT(curState);
