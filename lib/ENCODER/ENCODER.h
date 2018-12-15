@@ -2,7 +2,7 @@
  * @Author: georg.duees 
  * @Date: 2018-12-15 11:56:25 
  * @Last Modified by: georg.duees
- * @Last Modified time: 2018-12-15 20:47:08
+ * @Last Modified time: 2018-12-15 23:00:35
  * Inspired by Christian Aschoff / caschoff _AT_ mac _DOT_ com Qlockthree
  */
 #ifndef ENCODER_H
@@ -56,7 +56,7 @@ private:
        static const int8_t _table[16];
          volatile int16_t _delta;
     State _state;
-bool doubleClickEnabled;
+
 };
 
 #endif
