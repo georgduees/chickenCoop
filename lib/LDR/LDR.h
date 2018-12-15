@@ -2,7 +2,7 @@
  * @Author: georg.duees 
  * @Date: 2018-12-15 11:56:25 
  * @Last Modified by: georg.duees
- * @Last Modified time: 2018-12-15 12:35:09
+ * @Last Modified time: 2018-12-15 12:44:36
  * Inspired by Christian Aschoff / caschoff _AT_ mac _DOT_ com Qlockthree
  */
 #ifndef LDR_H
@@ -19,12 +19,12 @@
 /**
  * Die maximale Helligkeit (default = 9)
  */
-#define MAX_BRIGHTNESS 1000
+#define MAX_BRIGHTNESS 100
 /**
  * Die Menge der Werte fuer die Glaettung. Mehr Werte bringen bessere Ergebnisse aber
  * brauchen auch mehr Zeit. (Gleitender Mittelwert)
  */
-#define LDR_MEAN 32
+#define LDR_MEAN 64
 
 class LDR {
 public:
