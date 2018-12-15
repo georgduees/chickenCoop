@@ -2,10 +2,11 @@
  * @Author: georg.duees 
  * @Date: 2018-12-15 11:56:45 
  * @Last Modified by: georg.duees
- * @Last Modified time: 2018-12-15 12:41:43
+ * @Last Modified time: 2018-12-15 20:46:17
  * Inspired by Christian Aschoff / caschoff _AT_ mac _DOT_ com Qlockthree*/
 #include "LDR.h"
 
+#include "DEBUG.h"
  //#define DEBUG
 
 /**
@@ -61,18 +62,18 @@ int LDR::brightness() {
   val = constrain(val, _min, _max);
 #endif
   int b = map(val, _min, _max, MAX_BRIGHTNESS, 1);
-#ifdef DEBUG
-    Serial.print(F(" _inverted: "));
-    Serial.print(_inverted);
-    Serial.print(F(" _min: "));
-    Serial.print(_min);
-    Serial.print(F(" _max: "));
-    Serial.print(_max);
-    Serial.print(F(" ldr: "));
-    Serial.print(val);
-    Serial.print(F(" brightness: "));
-    Serial.println(b);
-#endif
+
+    DEBUG_PRINT(F(" _inverted: "));
+    DEBUG_PRINT(_inverted);
+    DEBUG_PRINT(F(" _min: "));
+    DEBUG_PRINT(_min);
+    DEBUG_PRINT(F(" _max: "));
+    DEBUG_PRINT(_max);
+    DEBUG_PRINT(F(" ldr: "));
+    DEBUG_PRINT(val);
+    DEBUG_PRINT(F(" brightness: "));
+    DEBUG_PRINTLN(b);
+
   return b;
 }
 

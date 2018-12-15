@@ -2,7 +2,7 @@
  * @Author: georg.duees 
  * @Date: 2018-12-15 11:56:25 
  * @Last Modified by: georg.duees
- * @Last Modified time: 2018-12-15 12:44:36
+ * @Last Modified time: 2018-12-15 20:45:40
  * Inspired by Christian Aschoff / caschoff _AT_ mac _DOT_ com Qlockthree
  */
 #ifndef LDR_H

@@ -18,7 +18,7 @@
 //Einstellungen
 //Settings: Einstellungen zum Typ der  verwendeten Hardware
 //type of LED attached
-#define LED_TYPE_APA102
+#define LED_TYPE APA102
 //#define LED_TYPE_WS2812
 #define LED_NUM 1
 // RTC Module I2C Adress
