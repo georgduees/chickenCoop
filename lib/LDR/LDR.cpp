@@ -2,13 +2,14 @@
  * @Author: georg.duees 
  * @Date: 2018-12-15 11:56:45 
  * @Last Modified by: georg.duees
- * @Last Modified time: 2018-12-15 20:46:17
+ * @Last Modified time: 2018-12-16 01:04:46
  * Inspired by Christian Aschoff / caschoff _AT_ mac _DOT_ com Qlockthree*/
+
 #include "LDR.h"
 
-#include "DEBUG.h"
- //#define DEBUG
+#define DEBUG
 
+#include "DEBUG.h"
 /**
  * Initialisierung mit dem Pin, an dem der LDR haengt
  */

@@ -1,17 +1,18 @@
 #include <Arduino.h>
 #include <Wire.h> 
-
-
+#define DEBUG
+#include "DEBUG.h"
 #include "DS1307.h"
 #include "MyRTC.h"
 #include "LDR.h"
 #include "ENCODER.h"
 #include "TimerOne.h"
 #include "LED.h"
+#include "DOORSENSOR.h"
 // enable DEBUG OUTPUT RETURNS MORE VERBOSE OUTPUTS
-#define DEBUG
 
-#include "DEBUG.h"
+
+
 // Die Geschwindigkeit der seriellen Schnittstelle. Default: 57600. Die Geschwindigkeit brauchen wir immer,
 // da auch ohne DEBUG Meldungen ausgegeben werden!
 #define SERIAL_SPEED 9600
@@ -42,7 +43,7 @@
 // INVERT THE LDR SIGNAL
 #define LDR_INVERTED true
 
-
+#define DOORSENSOR_INVERTED 0
 //Set Up Onewire Temperature Sensor adresses:
 #define ONEWIRE_TEMP1 {0x28 ,0x78,0x1E,0x75,0x32,0x14,0x01,0xC8}
 #define ONEWIRE_TEMP2 {0x28, 0xAA, 0xE9, 0xA4, 0x1D, 0x13, 0x02, 0x5C}
@@ -65,8 +66,8 @@
 #define PIN_ENC1_C 5
 
 //REED SWITCH PINS
-#define PIN_REED_1 8
-#define PIN_REED_2 9
+#define PIN_REED_1 9
+#define PIN_REED_2 8
 // LED STRIP PINOUT
 #define PIN_LED_DATA 10
 #define PIN_LED_CLK 13
@@ -97,15 +98,20 @@ LDR ldr(PIN_LDR,LDR_INVERTED);
 unsigned long lastBrightnessCheck;
 Encoder encoder = Encoder(PIN_ENC1_A,PIN_ENC1_B,PIN_ENC1_C,4,true);
 
-//encoder Timer
-void timerIsr() {
-  encoder.service();
-}
+
 // initialize LED
 
 LED led = LED(LED_TYPE,PIN_LED_DATA,PIN_LED_CLK,LED_COLORPROFILE);
-//HELPER FUNCTIONS
+//INITIALIZE DOORSENSOR
+DoorSensor doorSensor = DoorSensor(PIN_REED_1,PIN_REED_2,DOORSENSOR_INVERTED);
+    int lastDoorState =doorSensor.Value();
 
+//HELPER FUNCTIONS
+//encoder Timer
+void timerIsr() {
+  encoder.service();
+  doorSensor.service();
+}
 //helper functions
 /**
  * Den freien Specher abschaetzen.
@@ -196,10 +202,7 @@ DEBUG_PRINT(F("Encoder Value: "));
     DEBUG_PRINTLN(encoder.Value());
     DEBUG_FLUSH();
 
-    led.blink(1);
-    led.blink(1,CRGB::Red);
-    led.blink(1,CRGB::Blue);
-    led.show(CRGB::DarkMagenta,64,5000);
+
 }
 void loop(){
   Encoder::State curState=encoder.Value();
@@ -239,18 +242,25 @@ void loop(){
    };
    // RESET encoder state to detect changes
    encoder.ResetState();
-
-
-   /*
-   e
- }
+   DoorSensor::State curDoorState=doorSensor.Value();
+   if(lastDoorState!=curDoorState){
+switch (curDoorState)
+   {
+       case doorSensor.CLOSED:
+            led.blink(1,CRGB::Red);
+           break;
   
-  /*
-DEBUG_PRINT(F("LDR Brightness: "));
-    DEBUG_PRINT(ldr.brightness());
-    DEBUG_PRINT(F(" / "));
-    DEBUG_PRINTLN(MAX_BRIGHTNESS);
-    DEBUG_FLUSH();
-    delay(100);*/
+            case doorSensor.SWITCH1:
+            led.blink(1,CRGB::Green);
+           break;
+       default:
+            led.blink(1,CRGB::Yellow);
+           
+           break;
+   }
+   lastDoorState=curDoorState;
+   }
+   
+  
 }
 

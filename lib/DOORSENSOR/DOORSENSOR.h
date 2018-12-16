@@ -2,7 +2,7 @@
  * @Author: georg.duees 
  * @Date: 2018-12-15 22:50:15 
  * @Last Modified by: georg.duees
- * @Last Modified time: 2018-12-15 23:33:20
+ * @Last Modified time: 2018-12-16 00:29:07
  */
 
 #ifndef DOORSENSOR_H
@@ -13,15 +13,14 @@
 #else
   #include "WProgram.h"
 #endif
-#define UPPERLIMIT 1 
+#define UPPER_SWITCH_PIN 8
 class DoorSensor {
 public:
     typedef enum  State {
     UNKNOWN=0,
     SWITCH1=1,
     SWITCH2=2,
-    CLOSED=3,
-    OPEN=4
+    CLOSED=3
     }State;
     
 public:
@@ -34,6 +33,7 @@ public:
 private:
     byte _switchPin1;
     byte _switchPin2;
+    int _prevState;
     State _state;
     bool _inverted;
 };

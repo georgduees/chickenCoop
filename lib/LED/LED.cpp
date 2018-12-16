@@ -2,11 +2,14 @@
  * @Author: georg.duees 
  * @Date: 2018-12-15 20:58:19 
  * @Last Modified by: georg.duees
- * @Last Modified time: 2018-12-15 22:44:12
+ * @Last Modified time: 2018-12-16 01:04:40
  */
+
 #include "LED.h"
 #include "FastLED.h"
+
 #define DEBUG
+
 #include "DEBUG.h"
 
 #define LED_TYPE APA102
