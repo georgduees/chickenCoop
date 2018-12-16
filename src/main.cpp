@@ -11,6 +11,7 @@
 #include "DOORSENSOR.h"
 // enable DEBUG OUTPUT RETURNS MORE VERBOSE OUTPUTS
 
+#pragma region  definitions
 
 
 // Die Geschwindigkeit der seriellen Schnittstelle. Default: 57600. Die Geschwindigkeit brauchen wir immer,
@@ -82,7 +83,9 @@
 #define PIN_LDR A7
 
 
+#pragma endregion
 
+#pragma region initializations
 
 //TIME DEFINITION
 /**
@@ -122,27 +125,24 @@ void timerIsr() {
       int v;
       return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
   }
+  #pragma endregion
 void setup() {
     Serial.begin(SERIAL_SPEED);
-//initialization of EC11 encoder
-  Timer1.initialize(1000);
-  Timer1.attachInterrupt(timerIsr); 
-  
+    //initialization of EC11 encoder
+    Timer1.initialize(1000);
+    Timer1.attachInterrupt(timerIsr); 
     // Set Timeout of 50ms for Serial.parseInt()
     Serial.setTimeout(50);
     DEBUG_PRINTLN(F("chickenCoop is initializing..."));
     DEBUG_PRINTLN(F("... and starting in debug-mode..."));
     DEBUG_FLUSH();
-
-  //load Settings from EEPROM.
-
+    //load Settings from EEPROM.
     // starte Wire-Library als I2C-Bus Master
     Wire.begin();
-
     /*// RTC-Interrupt-Pin konfigurieren
     pinMode(PIN_SQW_SIGNAL, INPUT);
     digitalWrite(PIN_SQW_SIGNAL, HIGH);
-  */
+    */
     DEBUG_PRINT(F("Compiled: "));
     DEBUG_PRINT(F(__TIME__));
     DEBUG_PRINT(F(" / "));
@@ -150,10 +150,6 @@ void setup() {
 
     // RTC starten...
     rtc.readTime();
-
-
-
-
     rtc.writeTime();
     helperSeconds = rtc.getSeconds();
     DEBUG_PRINT(F("RTC-Time: "));
@@ -168,99 +164,93 @@ void setup() {
     DEBUG_PRINT(rtc.getMonth());
     DEBUG_PRINT(F("."));
     DEBUG_PRINTLN(rtc.getYear());
-  /*
+    /*
     // Den Interrupt konfigurieren,
     // nicht mehr CHANGE, das sind 2 pro Sekunde,
     // RISING ist einer pro Sekunde, das reicht.
     // Auf FALLING geandert, das signalisiert
     // den Sekundenwechsel, Danke an Peter.
     attachInterrupt(0, updateFromRtc, FALLING);
-  */
+    */
     // Werte vom LDR einlesen und vermuellen, da die ersten nichts taugen...
     for (int i = 0; i < 1000; i++) {
-      analogRead(PIN_LDR);
+    analogRead(PIN_LDR);
     }
-
     // ein paar Infos ausgeben
     DEBUG_PRINTLN(F("... done and ready to rock!"));
     DEBUG_PRINT(F("Driver: "));
-  // ledDriver.printSignature();
-
+    // ledDriver.printSignature();
     DEBUG_PRINT(F("Free ram: "));
     DEBUG_PRINT(freeRam());
     DEBUG_PRINTLN(F(" bytes."));
     DEBUG_FLUSH();
-DEBUG_PRINT(F("LDR Value: "));
+    DEBUG_PRINT(F("LDR Value: "));
     DEBUG_PRINTLN(ldr.value());
-DEBUG_PRINT(F("LDR Brightness: "));
+    DEBUG_PRINT(F("LDR Brightness: "));
     DEBUG_PRINT(ldr.brightness());
     DEBUG_PRINT(F(" / "));
     DEBUG_PRINTLN(MAX_BRIGHTNESS);
 
     DEBUG_FLUSH();
-DEBUG_PRINT(F("Encoder Value: "));
+    DEBUG_PRINT(F("Encoder Value: "));
     DEBUG_PRINTLN(encoder.Value());
     DEBUG_FLUSH();
-
-
 }
 void loop(){
-  Encoder::State curState=encoder.Value();
-   switch (curState){
-     case encoder.LEFT:
-     DEBUG_PRINT(F("Encoder State: "));
-    DEBUG_PRINT(curState);
-    DEBUG_PRINT(F(" / "));
-        DEBUG_PRINTLN(F("LEFT"));
-        break;
-    case encoder.RIGHT: 
-    DEBUG_PRINT(F("Encoder State: "));
-    DEBUG_PRINT(curState);
-    DEBUG_PRINT(F(" / "));
-        DEBUG_PRINTLN(F("RIGHT"));
-        break;
+
+Encoder::State curState=encoder.Value();
+    switch (curState){
+        case encoder.LEFT:
+            DEBUG_PRINT(F("Encoder State: "));
+            DEBUG_PRINT(curState);
+            DEBUG_PRINT(F(" / "));
+            DEBUG_PRINTLN(F("LEFT"));
+            break;
+        case encoder.RIGHT: 
+            DEBUG_PRINT(F("Encoder State: "));
+            DEBUG_PRINT(curState);
+            DEBUG_PRINT(F(" / "));
+            DEBUG_PRINTLN(F("RIGHT"));
+            break;
         case encoder.CLICK:
-         DEBUG_PRINT(F("Encoder State: "));
-    DEBUG_PRINT(curState);
-    DEBUG_PRINT(F(" / "));
-        DEBUG_PRINTLN(F("CLICK"));
+            DEBUG_PRINT(F("Encoder State: "));
+            DEBUG_PRINT(curState);
+            DEBUG_PRINT(F(" / "));
+            DEBUG_PRINTLN(F("CLICK"));
+            break;
+        case encoder.DOUBLECLICK:
+            DEBUG_PRINT(F("Encoder State: "));
+            DEBUG_PRINT(curState);
+            DEBUG_PRINT(F(" / "));
+            DEBUG_PRINTLN(F("DOUBLECLICK"));
+            break;
+        case encoder.HOLD:
+            DEBUG_PRINT(F("Encoder State: "));
+            DEBUG_PRINT(curState);
+            DEBUG_PRINT(F(" / "));
+            DEBUG_PRINTLN(F("HOLD"));
+            break;
+        default:
         break;
-       case encoder.DOUBLECLICK:
-        DEBUG_PRINT(F("Encoder State: "));
-    DEBUG_PRINT(curState);
-    DEBUG_PRINT(F(" / "));
-     DEBUG_PRINTLN(F("DOUBLECLICK"));
-     break;
-         case encoder.HOLD:
-          DEBUG_PRINT(F("Encoder State: "));
-    DEBUG_PRINT(curState);
-    DEBUG_PRINT(F(" / "));
-     DEBUG_PRINTLN(F("HOLD"));
-     break;
-     default:
-       break;
-   };
-   // RESET encoder state to detect changes
-   encoder.ResetState();
-   DoorSensor::State curDoorState=doorSensor.Value();
-   if(lastDoorState!=curDoorState){
-switch (curDoorState)
-   {
-       case doorSensor.CLOSED:
+    };
+// RESET encoder state to detect changes
+encoder.ResetState();
+DoorSensor::State curDoorState=doorSensor.Value();
+
+    if(lastDoorState!=curDoorState){
+        switch (curDoorState)
+        {
+        case doorSensor.CLOSED:
             led.blink(1,CRGB::Red);
-           break;
-  
-            case doorSensor.SWITCH1:
+            break;
+        case doorSensor.SWITCH1:
             led.blink(1,CRGB::Green);
-           break;
-       default:
+            break;
+        default:
             led.blink(1,CRGB::Yellow);
-           
-           break;
-   }
-   lastDoorState=curDoorState;
-   }
-   
-  
+            break;
+        }
+        lastDoorState=curDoorState;
+    }
 }
 
